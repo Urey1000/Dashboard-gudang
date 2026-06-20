@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | PT Samyuan Manunggal Perkasa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar no-print">
+        <button onclick="alert('Halaman Data Gudang Aktif')">Data Gudang</button>
+        <button onclick="alert('Fitur Data Fakturis dalam pengembangan')">Data Fakturis</button>
+        <button onclick="alert('Fitur Data Sales dalam pengembangan')">Data Sales</button>
+        <button onclick="alert('Fitur Data Admin dalam pengembangan')">Data Admin</button>
+        <button class="btn-print" onclick="window.print()">Print Halaman</button>
+    </nav>
+
+    <header class="company-header">
+        <div class="header-container">
+            <img src="SMP.png" alt="Logo PT Samyuan Manunggal Perkasa" class="logo-perusahaan">
+            <div class="header-text">
+                <h1>PT SAMYUAN MANUNGGAL PERKASA</h1>
+                <p>Jl. Ir. H. Djuanda No. 18 (Komp. Rukan TFT Blok A2), Linggajaya, Kec. Mangkubumi, Kota Tasikmalaya, Jawa Barat 46181</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="print-info" style="display: none;">
+        <h2>Laporan Gudang</h2>
+        <p>Periode: <span id="printPeriode">Semua</span></p>
+        <p>Tanggal Cetak: <span id="printTanggal">-</span></p>
+    </div>
+
+    <main>
+        <section class="form-section no-print">
+            <h2>Input Data Stock Barang</h2>
+            <form id="formInputStock">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Merk Dagang:</label>
+                        <select id="inputMerk" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Barang:</label>
+                        <input type="text" id="inputNama" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ukuran:</label>
+                        <input type="text" id="inputUkuran" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nominal Harga (Rp):</label>
+                        <input type="number" id="inputHarga" required value="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Jumlah (Satuan Awal):</label>
+                        <input type="number" id="inputJumlah" required value="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Barang Masuk:</label>
+                        <input type="number" id="inputMasuk" required value="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Barang Keluar:</label>
+                        <input type="number" id="inputKeluar" required value="0" min="0">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Simpan Data</button>
+                    <button type="button" class="btn-cancel no-print" onclick="resetModeForm()">Reset Form</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="filter-section no-print">
+            <h2>Filter Dashboard Gudang</h2>
+            <div class="filter-grid">
+                <div class="form-group">
+                    <label>Periode Rekap:</label>
+                    <select id="filterPeriode">
+                        <option value="semua">Semua Data</option>
+                        <option value="harian">Harian</option>
+                        <option value="mingguan">Mingguan</option>
+                        <option value="bulanan">Bulanan</option>
+                        <option value="tahunan">Tahunan</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Cari Barang / Merk:</label>
+                    <input type="text" id="inputSearch" placeholder="Cari ID merk, merk, nama barang, ukuran...">
+                </div>
+            </div>
+        </section>
+
+        <section class="summary-section">
+            <h2>Dashboard Rekap Gudang</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h3>Total Item</h3>
+                    <p id="sumTotalItem">0</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Total Stok</h3>
+                    <p id="sumTotalStok">0</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Total Masuk</h3>
+                    <p id="sumTotalMasuk">0</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Total Keluar</h3>
+                    <p id="sumTotalKeluar">0</p>
+                </div>
+                <div class="summary-card highlight">
+                    <h3>Total Nilai Inventori</h3>
+                    <p id="sumTotalNilai">Rp 0</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="export-section no-print">
+            <h3>Download / Cetak Laporan</h3>
+            <div class="export-buttons">
+                <button onclick="exportCSV('harian')">CSV Harian</button>
+                <button onclick="exportCSV('mingguan')">CSV Mingguan</button>
+                <button onclick="exportCSV('bulanan')">CSV Bulanan</button>
+                <button onclick="exportCSV('tahunan')">CSV Tahunan</button>
+                <button onclick="exportCSV('semua')">CSV Semua Data</button>
+                <button class="btn-print-pdf" onclick="cetakLaporan()">🖨️ Print Laporan (PDF)</button>
+            </div>
+        </section>
+
+        <section class="table-section">
+            <h2>Data Inventori Gudang</h2>
+            <div class="table-responsive">
+                <table id="tabelStock">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>ID Merk</th>
+                            <th>Merk Dagang</th>
+                            <th>Nama Barang</th>
+                            <th>Ukuran</th>
+                            <th>Harga (Rp)</th>
+                            <th>Stok Awal</th>
+                            <th>Masuk</th>
+                            <th>Keluar</th>
+                            <th>Stok Terbaru</th>
+                            <th>Nilai Stok</th>
+                            <th>Update Terakhir</th>
+                            <th class="no-print">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="isiTabel"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Est.2026 | PT. Samyuan Manunggal Perkasa</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

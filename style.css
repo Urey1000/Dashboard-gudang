@@ -1,0 +1,512 @@
+/* ========================================
+   GLOBAL STYLES & UI RESET
+======================================== */
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f0f4f8;
+    color: #2d3748;
+    line-height: 1.6;
+}
+
+/* ========================================
+   NAVIGATION BAR UX
+======================================== */
+.navbar {
+    background-color: #003399; /* Biru Logo */
+    padding: 12px 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.navbar button {
+    background-color: transparent;
+    color: white;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.navbar button:hover {
+    background-color: #cda34f; /* Emas Logo */
+    border-color: #cda34f;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.navbar .btn-print {
+    background-color: #cda34f;
+    border-color: #cda34f;
+}
+
+/* ========================================
+   HEADER & FIXED LOGO SIZE
+======================================== */
+.company-header {
+    background-color: white;
+    padding: 25px 20px;
+    border-bottom: 4px solid #cda34f;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+.logo-perusahaan {
+    width: auto;
+    height: 75px; 
+    object-fit: contain;
+}
+
+.header-text h1 {
+    color: #003399;
+    font-size: 24px;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.header-text p {
+    font-size: 13px;
+    color: #718096;
+    max-width: 700px;
+}
+
+/* ========================================
+   CONTAINER MAIN & SECTIONS
+======================================== */
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.form-section, .export-section, .table-section, .filter-section, .summary-section {
+    background: white;
+    padding: 24px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+h2, h3 {
+    color: #003399;
+    margin-bottom: 18px;
+    font-size: 18px;
+    border-left: 4px solid #cda34f;
+    padding-left: 10px;
+}
+
+/* ========================================
+   MODERN FORM GRID UX
+======================================== */
+.form-grid, .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #4a5568;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background-color: #f7fafc;
+}
+
+.form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: #003399;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 51, 153, 0.15);
+}
+
+/* ========================================
+   TOMBOL ACTION FORM
+======================================== */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-submit {
+    background-color: #003399;
+    color: white;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    flex: 2;
+}
+
+.btn-submit:hover {
+    background-color: #002266;
+    box-shadow: 0 4px 12px rgba(0, 51, 153, 0.25);
+}
+
+.btn-cancel {
+    background-color: #6c757d;
+    color: white;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    flex: 1;
+}
+
+.btn-cancel:hover {
+    background-color: #5a6268;
+}
+
+/* ========================================
+   SUMMARY / REKAP DASHBOARD PRO V7
+======================================== */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #003399, #002266);
+    color: white;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 6px 14px rgba(0, 51, 153, 0.15);
+}
+
+.summary-card h3 {
+    color: #fff;
+    border-left: none;
+    padding-left: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.summary-card p {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.summary-card.highlight {
+    background: linear-gradient(135deg, #cda34f, #b68c35);
+}
+
+/* ========================================
+   EXPORT BUTTONS UX
+======================================== */
+.export-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.export-section button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.export-section button:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+}
+
+/* WARNA TOMBOL PRINT PDF */
+.export-section .btn-print-pdf {
+    background-color: #17a2b8; 
+}
+.export-section .btn-print-pdf:hover {
+    background-color: #138496;
+}
+
+/* ========================================
+   DESKTOP TABLE STYLE & RESPONSIVE WRAPPER
+======================================== */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    min-width: 1000px;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+th {
+    background-color: #003399;
+    color: white;
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: #f7fafc;
+}
+
+/* TABLE ACTION BUTTONS */
+.btn-edit {
+    background-color: #ffc107;
+    color: #1a202c;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.btn-hapus {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+/* ========================================
+   MOBILE RESPONSIVE TWEAKS (CARD VIEW)
+======================================== */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .logo-perusahaan {
+        height: 60px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-submit, .btn-cancel {
+        width: 100%;
+        flex: none;
+    }
+
+    table {
+        min-width: 100%;
+    }
+
+    table, thead, tbody, th, td, tr { 
+        display: block; 
+    }
+    
+    thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    tr { 
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        padding: 10px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    
+    td { 
+        border: none;
+        border-bottom: 1px solid #f1f5f9; 
+        position: relative;
+        padding-left: 45%; 
+        text-align: right;
+        word-break: break-word; 
+    }
+    
+    td:before { 
+        position: absolute;
+        top: 12px;
+        left: 15px;
+        width: 45%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+        color: #4a5568;
+    }
+    
+    td:nth-of-type(1):before { content: "No"; }
+    td:nth-of-type(2):before { content: "ID Merk"; }
+    td:nth-of-type(3):before { content: "Merk Dagang"; }
+    td:nth-of-type(4):before { content: "Nama Barang"; }
+    td:nth-of-type(5):before { content: "Ukuran"; }
+    td:nth-of-type(6):before { content: "Harga (Rp)"; }
+    td:nth-of-type(7):before { content: "Stok Awal"; }
+    td:nth-of-type(8):before { content: "Masuk"; }
+    td:nth-of-type(9):before { content: "Keluar"; }
+    td:nth-of-type(10):before { content: "Stok Terbaru"; }
+    td:nth-of-type(11):before { content: "Nilai Stok"; }
+    td:nth-of-type(12):before { content: "Update Terakhir"; }
+    td:nth-of-type(13):before { content: "Aksi"; }
+}
+
+/* ========================================
+   FOOTER
+======================================== */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #003399;
+    color: white;
+    margin-top: 40px;
+    font-size: 14px;
+}
+
+/* ========================================
+   PRINT INFO (Sembunyikan di layar, rapikan format)
+======================================== */
+.print-info {
+    display: none;
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+}
+
+.print-info h2 {
+    color: #000;
+    border: none;
+    margin-bottom: 5px;
+}
+
+/* ========================================
+   PRINT RULES (Setingan Khusus Kertas A4 & Hemat Tinta)
+======================================== */
+@media print {
+    @page {
+        size: landscape; 
+        margin: 1cm;
+    }
+    
+    body {
+        background-color: #fff;
+        color: #000;
+    }
+
+    .no-print {
+        display: none !important; 
+    }
+
+    /* Tampilkan judul cetak */
+    .print-info {
+        display: block !important;
+    }
+
+    .summary-section, .table-section {
+        box-shadow: none;
+        padding: 0;
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+    }
+
+    .summary-grid {
+        display: flex; 
+        gap: 10px;
+    }
+
+    /* Modifikasi Kartu Rekap saat dicetak agar Hemat Tinta dan Jelas */
+    .summary-card {
+        background: #fff !important; 
+        color: #000 !important;
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+        flex: 1;
+        padding: 10px;
+    }
+    
+    .summary-card h3, .summary-card p {
+        color: #000 !important;
+    }
+
+    .table-responsive {
+        overflow: visible !important; 
+    }
+
+    table {
+        min-width: 100%;
+        border-collapse: collapse;
+        font-size: 11px; 
+    }
+
+    th, td {
+        border: 1px solid #000; 
+        padding: 6px;
+        color: #000;
+    }
+
+    th {
+        background-color: #e2e8f0 !important; 
+        color: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
