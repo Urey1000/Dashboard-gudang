@@ -1,5 +1,5 @@
 // ========================================
-// DASHBOARD GUDANG - V10.2 PRO (OPTIMIZED + SAFE)
+// DASHBOARD GUDANG - V10.2 PRO (PATCHED & SECURED)
 // ========================================
 
 // ================================
@@ -22,20 +22,36 @@ const safeLoad = (key) => {
     }
 };
 
+// FIX 2: Mencegah angka negatif pada harga/input nominal
 const safeNumber = (v) => {
     const n = Number(v);
-    return Number.isFinite(n) ? n : 0;
+    return Number.isFinite(n) && n >= 0 ? n : 0; 
 };
 
 const safeString = (v) => (v || "").toString().trim();
 
-const calcStock = (a, m, k) => Math.max(0, a + m - k);
+// FIX 1: Membiarkan kalkulasi minus agar selisih stok ketahuan saat audit
+const calcStock = (a, m, k) => a + m - k;
 
 const nowTime = () => new Date().toISOString();
 
 const formatRupiah = (n) => `Rp ${safeNumber(n).toLocaleString("id-ID")}`;
 
 const formatDate = (d) => d ? new Date(d).toLocaleString("id-ID") : "-";
+
+// FIX 3: Sanitasi XSS untuk mencegah eksekusi script berbahaya dari input user
+const escapeHTML = (str) => safeString(str).replace(/[&<>'"]/g, 
+    tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+    }[tag] || tag)
+);
+
+// FIX 4: ID Generator yang jauh lebih aman dari tabrakan (Collision-resistant)
+const generateId = () => crypto?.randomUUID?.() || (Date.now().toString(36) + Math.random().toString(36).substr(2, 5));
 
 // ================================
 // STATE
@@ -52,8 +68,15 @@ function saveDB() {
     try {
         localStorage.setItem("dataStockGudang", JSON.stringify(dataStockGudang));
         localStorage.setItem("dataMovement", JSON.stringify(dataMovement));
-    } catch {
-        alert("Storage penuh / error saat menyimpan data!");
+        return true;
+    } catch (e) {
+        // FIX 5: Rollback state jika storage penuh agar UI dan Database tidak desync (tidak sinkron)
+        alert("CRITICAL ERROR: Storage browser penuh! Data gagal disimpan. Memuat ulang data terakhir...");
+        dataStockGudang = safeLoad("dataStockGudang");
+        dataMovement = safeLoad("dataMovement");
+        invalidateLedger();
+        scheduleRender();
+        return false;
     }
 }
 
@@ -99,7 +122,7 @@ function catatMovement(id, type, qty) {
     if (qty <= 0) return;
 
     dataMovement.push({
-        id: crypto?.randomUUID?.() || Date.now().toString(),
+        id: generateId(), // Menggunakan FIX 4
         stockId: id,
         type,
         qty,
@@ -182,7 +205,6 @@ async function muatDataMerk() {
         console.warn("Gagal parse data app.json");
     }
 
-    // FALLBACK OFFLINE JIKA GAGAL FETCH ATAU KOSONG
     if (!Array.isArray(data) || data.length === 0) {
         console.warn("Menggunakan DEFAULT_MERK");
         data = DEFAULT_MERK;
@@ -194,8 +216,6 @@ async function muatDataMerk() {
         opt.textContent = `${m.id} - ${m.nama}`;
         select.appendChild(opt);
     });
-
-    console.log("Merk loaded:", data.length);
 }
 
 // ================================
@@ -213,7 +233,6 @@ function getJoinedData() {
         const s = getStockStats(item.id);
         const merged = { ...item, ...s };
 
-        // filter period
         const d = new Date(merged.lastUpdate || merged.createdAt || new Date());
         const now = new Date();
 
@@ -269,22 +288,25 @@ function renderTabel() {
         tk += b.keluar;
         tn += nilai;
 
+        // FIX 1 Lanjutan: Penanda visual jika stok minus (indikasi kebocoran/error)
         const status =
+            b.stok < 0 ? "🚨 SELISIH (MINUS)" :
             b.stok === 0 ? "❌ Habis" :
             b.stok < 5 ? "⚠️ Menipis" : "✅ Aman";
 
+        // FIX 3 Lanjutan: Terapkan escapeHTML pada semua data teks inputan pengguna
         html += `
 <tr>
     <td>${i + 1}</td>
-    <td>${b.idMerk || "-"}</td>
-    <td>${b.namaMerk || "-"}</td>
-    <td>${b.namaBarang || "-"}</td>
-    <td>${b.ukuran || "-"}</td>
+    <td>${escapeHTML(b.idMerk) || "-"}</td>
+    <td>${escapeHTML(b.namaMerk) || "-"}</td>
+    <td>${escapeHTML(b.namaBarang) || "-"}</td>
+    <td>${escapeHTML(b.ukuran) || "-"}</td>
     <td>${formatRupiah(b.harga)}</td>
     <td>${b.awal}</td>
     <td>${b.masuk}</td>
     <td>${b.keluar}</td>
-    <td><b>${b.stok}</b><br><small>${status}</small></td>
+    <td style="${b.stok < 0 ? 'color: red;' : ''}"><b>${b.stok}</b><br><small>${status}</small></td>
     <td>${formatRupiah(nilai)}</td>
     <td>${formatDate(b.lastUpdate || b.createdAt)}</td>
     <td>
@@ -327,7 +349,6 @@ function setText(id, v) {
 window.handleSubmit = (e) => {
     e.preventDefault();
     
-    // Asumsi input form ID yang digunakan: inputMerk, inputBarang, inputUkuran, inputHarga, inputAwal
     const merkVal = val("inputMerk").split("|");
     const idMerk = merkVal[0] || "UMUM";
     const namaMerk = merkVal[1] || "Umum";
@@ -340,7 +361,6 @@ window.handleSubmit = (e) => {
     if (!namaBarang) return alert("Nama barang tidak boleh kosong!");
 
     if (modeEditId) {
-        // Mode Edit
         const idx = dataStockGudang.findIndex(x => x.id === modeEditId);
         if (idx > -1) {
             dataStockGudang[idx] = { 
@@ -350,8 +370,7 @@ window.handleSubmit = (e) => {
         }
         modeEditId = null;
     } else {
-        // Mode Tambah Baru
-        const newId = crypto?.randomUUID?.() || Date.now().toString();
+        const newId = generateId(); // Menggunakan FIX 4
         dataStockGudang.push({
             id: newId,
             idMerk,
@@ -362,7 +381,6 @@ window.handleSubmit = (e) => {
             createdAt: nowTime()
         });
         
-        // Catat stok awal ke movement
         if (stokAwal > 0) {
             catatMovement(newId, "AWAL", stokAwal);
         }
@@ -371,7 +389,7 @@ window.handleSubmit = (e) => {
     saveDB();
     invalidateLedger();
     scheduleRender();
-    e.target.reset(); // Reset form
+    e.target.reset(); 
 };
 
 window.editData = (id) => {
@@ -380,12 +398,11 @@ window.editData = (id) => {
     
     modeEditId = id;
     
-    // Asumsi ID input HTML sesuai dengan helper. Sesuaikan jika ID di HTML berbeda.
     const merkInput = document.getElementById("inputMerk");
     if (merkInput) merkInput.value = `${data.idMerk}|${data.namaMerk}`;
     
     const namaInput = document.getElementById("inputBarang");
-    if (namaInput) namaInput.value = data.namaBarang;
+    if (namaInput) namaInput.value = data.namaBarang; // Tidak perlu escape saat dikembalikan ke input form, browser menanganinya
     
     const ukuranInput = document.getElementById("inputUkuran");
     if (ukuranInput) ukuranInput.value = data.ukuran;
@@ -393,7 +410,6 @@ window.editData = (id) => {
     const hargaInput = document.getElementById("inputHarga");
     if (hargaInput) hargaInput.value = data.harga;
 
-    // Stok awal idealnya tidak bisa diedit saat mengubah data utama, agar pembukuan aman
     const awalInput = document.getElementById("inputAwal");
     if (awalInput) {
         awalInput.value = "";
@@ -431,9 +447,9 @@ window.resetERP = () => {
 // INIT
 // ================================
 async function initERP() {
-    console.log("V10.2 PRO ERP INIT - STARTED");
+    console.log("V10.2 PRO ERP INIT - STARTED (PATCHED)");
 
-    await muatDataMerk(); // ✔ WAJIB tunggu load data merk
+    await muatDataMerk(); 
     renderTabel();
 
     const form = document.getElementById("formInputStock");
@@ -454,3 +470,4 @@ if (!window.__ERP_INIT__) {
         initERP();
     }
 }
+
