@@ -304,29 +304,36 @@ tr:hover {
     background-color: #f7fafc;
 }
 
-/* TABLE ACTION BUTTONS */
-.btn-edit {
-    background-color: #ffc107;
-    color: #1a202c;
+/* ========================================
+   TABLE ACTION BUTTONS (SYNC WITH JS)
+======================================== */
+td button {
     border: none;
-    padding: 6px 12px;
+    padding: 6px 10px;
     border-radius: 4px;
     cursor: pointer;
-    margin-right: 5px;
+    margin: 2px;
     font-weight: 600;
-    font-size: 12px;
+    font-size: 11px;
+    color: white;
+    transition: all 0.2s ease;
 }
 
-.btn-hapus {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 12px;
-}
+/* Tombol +IN */
+td button:nth-of-type(1) { background-color: #28a745; }
+td button:nth-of-type(1):hover { background-color: #218838; }
+
+/* Tombol -OUT */
+td button:nth-of-type(2) { background-color: #fd7e14; }
+td button:nth-of-type(2):hover { background-color: #e8590c; }
+
+/* Tombol Edit */
+td button:nth-of-type(3) { background-color: #ffc107; color: #1a202c; }
+td button:nth-of-type(3):hover { background-color: #e0a800; }
+
+/* Tombol Hapus */
+td button:nth-of-type(4) { background-color: #dc3545; }
+td button:nth-of-type(4):hover { background-color: #c82333; }
 
 /* ========================================
    MOBILE RESPONSIVE TWEAKS (CARD VIEW)
@@ -510,3 +517,4 @@ footer {
         print-color-adjust: exact;
     }
 }
+
