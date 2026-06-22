@@ -43,7 +43,7 @@
                     </div>
                     <div class="form-group">
                         <label>Nama Barang:</label>
-                        <input type="text" id="inputNama" required>
+                        <input type="text" id="inputBarang" required> 
                     </div>
                     <div class="form-group">
                         <label>Ukuran:</label>
@@ -55,21 +55,11 @@
                     </div>
                     <div class="form-group">
                         <label>Jumlah (Satuan Awal):</label>
-                        <input type="number" id="inputJumlah" required value="0" min="0">
+                        <input type="number" id="inputAwal" required value="0" min="0">
                     </div>
-                    <div class="form-group">
-                        <label>Barang Masuk:</label>
-                        <input type="number" id="inputMasuk" required value="0" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Barang Keluar:</label>
-                        <input type="number" id="inputKeluar" required value="0" min="0">
-                    </div>
-                </div>
-
-                <div class="form-actions">
+                </div> <div class="form-actions">
                     <button type="submit" class="btn-submit">Simpan Data</button>
-                    <button type="button" class="btn-cancel no-print" onclick="resetModeForm()">Reset Form</button>
+                    <button type="reset" class="btn-cancel no-print" onclick="modeEditId = null; document.getElementById('inputAwal').disabled = false; document.getElementById('inputAwal').placeholder = '';">Reset Form</button>
                 </div>
             </form>
         </section>
@@ -167,3 +157,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
